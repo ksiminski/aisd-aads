@@ -1,0 +1,26 @@
+\documentclass[tikz]{standalone}
+ 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.14}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+%width=10cm,height=8cm,
+width=5cm,height=5cm,
+ymin =0,
+scale only axis,
+axis y line*=left,
+xlabel={vector size, $n$},
+ylabel style = {align=center},
+tick label style={/pgf/number format/fixed},
+ylabel={time [ms]},
+]
+ \addplot [mark=none] table [x=n, y=t, column sep=tab] {output.dat}; 
+\label{pgfplots:plot1}
+\end{axis}
+%
+\end{tikzpicture}
+\end{document}
+
