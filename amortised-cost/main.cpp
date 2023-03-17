@@ -17,7 +17,7 @@
  
 int main (int size, char ** params)
 {
-    const std::size_t n = 100000000;
+    const std::size_t number_of_values_to_insert = 100000000;
     const std::size_t items_to_print = 1000;
     const std::size_t rest = 10000;
     
@@ -25,18 +25,23 @@ int main (int size, char ** params)
     std::vector<std::size_t> vector;
     
     stopwatch.start();
-    for (std::size_t i = 0; i < n; i++)
+
+    /* [PL] dodanie w pętli znaczników czasowych do wektora 
+	    [EN] insertion of timestamps into a vector in a loop */
+    for (std::size_t i = 0; i < number_of_values_to_insert; i++)
     {
         vector.push_back(stopwatch.get_time_milliseconds());
     }
     
+	 /* [PL] zapis do pliku z wynikami
+	    [EN] save the results into a file */
     std::string file_name ("output.dat");
     std::ofstream file (file_name);
     if (file)
     {
         file << "n\tt\n";
         std::size_t i = 0;
-        std::size_t step = n / items_to_print;
+        std::size_t step = number_of_values_to_insert / items_to_print;
         for (std::size_t i = 0; i < vector.size(); i += step)
         {
             file << i << '\t' << vector[i] % rest << '\n';
