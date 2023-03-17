@@ -1,4 +1,12 @@
 
+
+/*
+[PL] Wektor z biblioteki STL (std::vector) jest zoptymalizowany dla dodawania na końcu (metoda push_back). W przypadku dodawania nowego elementu do pełnego wektora, wektor jest realokowany i jego rozmiar (capacity) podwaja się. Dzięki temu dodawanie n elementów po kolei (koszt zamortyzownay) ma złożoność liniową O(n). Oznacza to, że koszt zamortyzowany dodania elementu na końcu wektora jest stały. Program eksperymentalnie sprawdza, czy tak jest naprawdę. 
+
+[EN] The STL vector (std::vector) is optimised for adding new item at its end (the push_back method). If a new item is to be inserted to a full vector, the capacity of the vector is doubled. This is why the cost of insertion n items one by one (amortised cost) is linear O(n). It means the amortised cost of insertion of one item is constant. The program runs an experiment to test if it is true. 
+
+*/
+
 #include <string>
 #include <fstream>
 #include <vector>
