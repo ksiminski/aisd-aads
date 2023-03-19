@@ -1,0 +1,35 @@
+\documentclass[tikz]{standalone}
+ 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.14}
+
+
+\begin{document}
+\begin{tikzpicture}
+\begin{axis}[
+%width=10cm,height=8cm,
+width=5cm,height=5cm,
+ymin =0,
+scale only axis,
+axis y line*=left,
+xlabel={data size, $n$},
+ylabel style = {align=center},
+tick label style={/pgf/number format/fixed},
+ylabel={time [ms]},
+legend style={at={(0.45,0.9)}}
+]
+\addplot table [x=size, y=insertion-sort, column sep=tab] {output.dat}; \addlegendentry{ins};
+\addplot table [x=size, y=selection-sort, column sep=tab] {output.dat}; \addlegendentry{sel};
+\addplot table [x=size, y=bubblesort, column sep=tab] {output.dat}; \addlegendentry{bub};
+%\addplot table [x=size, y=shellsort+shell,      column sep=tab] {output.dat}; \addlegendentry{shell};
+%\addplot table [x=size, y=quicksort+m3m3,      column sep=tab] {output.dat}; \addlegendentry{quick};
+%\addplot table [x=size, y=mergesort,      column sep=tab] {output.dat}; \addlegendentry{merge};
+%\addplot table [x=size, y=heapsort,      column sep=tab] {output.dat}; \addlegendentry{heap};
+
+%\addplot {x * ln x};
+
+\end{axis}
+%
+\end{tikzpicture}
+\end{document}
+
