@@ -7,6 +7,7 @@
 #include <memory> 
 #include <vector>
 #include <map>
+#include <algorithm>
 
 #include "clock.h"
 #include "sorter.h"
@@ -18,14 +19,12 @@
 #include "quicksort.h"
 #include "bubblesort.h"
 
-
 #include "pivot_first.h"
 #include "pivot_last.h"
 #include "pivot_median_of_3.h"
 #include "pivot_median_of_3_medians_of_3.h"
 #include "pivot_middle.h"
 #include "pivot_random.h"
-
 
 #include "gaps_frank.h"
 #include "gaps_shell.h"
