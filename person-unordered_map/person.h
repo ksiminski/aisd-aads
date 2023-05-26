@@ -8,8 +8,8 @@
 /** 
  [PL] Klasa reprezentuje osobę. Klasa jest kluczem (indeksem) dla szablonu unordered_map. 
       Szablon unordered_map jest implementowany jako tablica mieszająca. Operacje słownikowe mają złożoność stałą O(1). 
- [EN] The class represents a person. This class is a key for a unordered_map.
-      The unordered_map template is implemented with a tash table. Dictionary operations have contant comlexity O(1).
+ [EN] The class represents a person. This class is a key for an unordered_map.
+      The unordered_map template is implemented with a hash table. Dictionary operations have contant comlexity O(1).
 
     @date   2023-05-26
     @author Krzysztof Siminski
