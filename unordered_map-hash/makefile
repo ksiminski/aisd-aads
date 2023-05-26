@@ -47,17 +47,17 @@ $(release_folder)/main.o : main.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
 $(debug_folder)/main.o : main.cpp
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
-$(release_folder)/osoba.o : osoba.cpp
+$(release_folder)/person.o : person.cpp
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -c -o $@ $^
-$(debug_folder)/osoba.o : osoba.cpp
+$(debug_folder)/person.o : person.cpp
 	$(kompilator) $(standard) $(debug) $(optyDebug) $(rownoleglosc) $(errors) -c -o $@ $^
 
 # linkowanie:
 
-$(release_folder)/main : $(release_folder)/main.o $(release_folder)/osoba.o 
+$(release_folder)/main : $(release_folder)/main.o $(release_folder)/person.o 
 	$(kompilator) $(standard) $(release) $(optRelease) $(rownoleglosc) $(errors) -o $@ $^
 
-$(debug_folder)/main : $(debug_folder)/main.o $(debug_folder)/osoba.o 
+$(debug_folder)/main : $(debug_folder)/main.o $(debug_folder)/person.o 
 	$(kompilator) $(standard) $(debug) $(optDebug) $(rownoleglosc) $(errors) -o $@ $^
 
 # usuniecie plikow skompilowanych:
