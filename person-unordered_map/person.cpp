@@ -12,6 +12,11 @@ person::person (const std::string & first_name, const std::string & surname, con
 // [PL] W C++20 operator== jest niepotrzebny. Zostanie automatycznie wygenerowany z operatora <=>.
 // [EN] In C++20 the operator== is not necessary. It will be automatically generated from the operator <=>.
 
+bool person::operator== (const person & p) const
+{
+   return _first_name == p._first_name and _surname == p._surname and _id == p._id; 
+}
+
 std::ostream & operator << (std::ostream & s, const person & os)
 {
    return s << os._first_name << ' ' << os._surname << " (" << os._id << ')';

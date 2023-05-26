@@ -29,11 +29,12 @@ class person
        [EN] It is necessary to implement the equality operator, because the equality of hashes does not imply 
             equality of objects. In case of equal hashes, it is necessary to test if the object are equal.
    */
+   bool operator== (const person & p) const ;
 
-   /** [PL] W C++20 można po prostu zadeklarować domyślny operator porównania <=>.
-       [EN] In C++20 you can just declare a default comparision operator <=>.
-   */
-   auto operator<=> (const person & p) const = default;
+   // [PL] W C++20 można po prostu zadeklarować domyślny operator porównania <=>.
+   // [EN] In C++20 you can just declare a default comparision operator <=>.
+   
+   // auto operator<=> (const person & p) const = default;
 
    friend
    std::ostream & operator << (std::ostream & s, const person & os);
