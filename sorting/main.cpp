@@ -19,12 +19,14 @@
 #include "quicksort.h"
 #include "bubblesort.h"
 
+
 #include "pivot_first.h"
 #include "pivot_last.h"
 #include "pivot_median_of_3.h"
 #include "pivot_median_of_3_medians_of_3.h"
 #include "pivot_middle.h"
 #include "pivot_random.h"
+
 
 #include "gaps_frank.h"
 #include "gaps_shell.h"
@@ -55,15 +57,18 @@ int main ()
 //    pivot_first pivot;
 //    pivot_last pivot;
 //    pivot_median_of_3 pivot;
-//    pivot_median_of_3_medians_of_3 pivot;
+    pivot_median_of_3_medians_of_3 pivot;
 //    pivot_middle pivot;
 //    pivot_random pivot;
    
-//    gaps_shell sequence;
+    gaps_shell sequence;
 //    gaps_frank sequence;
  
    std::vector<std::shared_ptr<sorter>> sorters
    {
+//        std::shared_ptr<sorter> (new bubblesort),
+    //    std::shared_ptr<sorter> (new insertion_sort),
+        std::shared_ptr<sorter> (new shellsort(sequence)),  // wstrzykiwanie zaleznosci
 //         std::shared_ptr<sorter> (new mergesort),
 //        std::shared_ptr<sorter> (new quicksort(pivot)),
         std::shared_ptr<sorter> (new bubblesort),
@@ -82,8 +87,8 @@ int main ()
 
 //     for (const auto n : {10})
 //        for (const auto n : {1'000, 2'000, 4'000, 8'000})
-   for (const auto n : {1'000, 10'000, 20'000, 30'000, 40'000, 50'000})
-//  for (const auto n : {10'000, 100'000, 200'000, 300'000, 400'000, 500'000})
+//   for (const auto n : {1'000, 10'000, 20'000, 30'000, 40'000, 50'000})
+  for (const auto n : {10'000, 100'000, 200'000, 300'000, 400'000, 500'000})
 //    for (const auto n : {200'000, 400'000, 800'000, 1600'000, 3200'000})
 //    for (const auto n : {2000'000, 4000'000, 8000'000, 16000'000, 32000'000})
    {
@@ -93,10 +98,10 @@ int main ()
 
    //arrays.push_back({1,2,3,4,5});
 
-   for (const auto p : sorters)
+   for (const auto & p : sorters)
    {
        std::cout << p->get_name() << std::endl;
-       for (const auto tab : arrays)
+       for (const auto & tab : arrays)
        {
            auto size = tab.size();
            std::cout << "\t" << size << " " << std::flush;
@@ -126,7 +131,7 @@ int main ()
    {
         // print header
         file << "size\t";
-        for (const auto iMethod : execution_times.begin()->second)
+        for (const auto & iMethod : execution_times.begin()->second)
         {
             file << iMethod.first << "\t";
         }
