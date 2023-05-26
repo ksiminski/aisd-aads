@@ -21,7 +21,7 @@
 class recursive_dynamic : public fibonacci
 {
 protected :
-    std::unordered_map<int, std::size_t> values;
+    std::unordered_map<int, std::size_t> values;  // hash-table, O(1) 
 public: 
     virtual std::size_t value (const unsigned int n) override;
     virtual ~recursive_dynamic ();
