@@ -3,20 +3,17 @@
 #include <fstream>
 #include <iostream>
 
- 
-
-
 const int MAX = 9;
 
-struct tablica 
+struct array 
 {
 	char el[MAX][MAX];
 	bool orig[MAX][MAX];
 
-	friend std::ostream & operator<< (std::ostream & s, tablica & t);
+	friend std::ostream & operator<< (std::ostream & s, array & t);
 };
 
-std::ostream & operator<< (std::ostream & s, tablica & t)
+std::ostream & operator<< (std::ostream & s, array & t)
 {
 	int i, j;
 	for (i = 0; i < MAX; i++)
@@ -32,32 +29,32 @@ std::ostream & operator<< (std::ostream & s, tablica & t)
 
 class sudoku
 {
-	class walidador
+	class validator
 	{
 		bool el[MAX];
-		int liczba_elementow;
+		int number_of_items;
 		public:
-		walidador();
+		validator();
 		void reset();
 		void add(char);
 		bool validate();
 	};
-	tablica tab;
-	bool rozwiaz(int w, int k, tablica tab);
-	bool walidacja (tablica & t);
+	array arr;
+	bool solve(int w, int k, array tab);
+	bool validation (array & t);
 	public:
-	std::string plikWyjsciowy;
-	void wczytaj(const std::string & plik);
-	void zapiszRozwiazanie (const std::string & plik);
-	bool rozwiaz();
+	std::string outputFile;
+	void read_in(const std::string & plik);
+	void save_solution (const std::string & plik);
+	bool solve();
 
 };
 
-void help (const std::string & nazwa)
+void help (const std::string & name)
 {
-	std::cout << "Program do rozwiazywania sudoku" << std::endl;
-	std::cout << "uruchomienie:" << std::endl;
-	std::cout << nazwa << " wejscie wyjscie" << std::endl;
+	std::cout << "Sudoku solver" << std::endl;
+	std::cout << "type to run:" << std::endl;
+	std::cout << name << " input_file output_file" << std::endl;
 
 	return;
 }
@@ -70,49 +67,51 @@ int main(int argc, char * argv[])
 		return 0;
 	}
 
-	std::string wejscie (argv[1]);
-	std::string wyjscie (argv[2]);
+	std::string input (argv[1]);
+	std::string output (argv[2]);
 	sudoku s;
-	s.wczytaj(wejscie);
-	s.rozwiaz();
-	s.zapiszRozwiazanie(wyjscie);
+	s.read_in(input);
+	s.solve();
+	s.save_solution(output);
 
 	return 0;
 }
 
-bool sudoku::walidacja(tablica & t)
+bool sudoku::validation(array & t)
 {
 	int w, k;
 
-	// sprawdzenie wierszy
+	// [PL] sprawdzenie wierszy
+	// [EN] check rows
 	for (w = 0; w < MAX; w++)
 	{
-		walidador wal;
+		validator wal;
 		for (k = 0; k < MAX; k++)
 			wal.add(t.el[w][k]);
 		if (wal.validate() == false)
 			return false;
 	}
 
-	// sprawdzenie kolumn
+	// [PL] sprawdzenie kolumn
+	// [EN] check columns
 	for (k = 0; k < MAX; k++)
 	{
-		walidador wal;
+		validator wal;
 		for (w = 0; w < MAX; w++)
 			wal.add(t.el[w][k]);
 		if (wal.validate() == false)
 			return false;
 	}
 
-	// sprawdzenie malych kwadratow
-
+	// [PL] sprawdzenie malych kwadratow
+	// [EN] check small squares
 	int wq, kq;
 
 	for (wq = 0; wq < MAX / 3; wq++)
 	{
 		for (kq = 0; kq < MAX / 3; kq++)
 		{
-			walidador wal;
+			validator wal;
 			for (w = 0; w < MAX / 3; w++)
 			{
 
@@ -127,50 +126,49 @@ bool sudoku::walidacja(tablica & t)
 	}
 	return true;
 }
-sudoku::walidador::walidador()
+sudoku::validator::validator()
 {
-	liczba_elementow = 0;
+	number_of_items = 0;
 	reset();
 }
-bool sudoku::walidador::validate()
+bool sudoku::validator::validate()
 {
 	int i;
-	int licznik = 0;
+	int counter = 0;
 	for (i = 0 ; i < MAX; i ++)
 		if (el[i])
-			licznik++;
-	return (licznik == liczba_elementow);
+			counter++;
+	return (counter == number_of_items);
 }
-void sudoku::walidador::reset()
+void sudoku::validator::reset()
 {
 	int i;
 	for (i = 0; i < MAX; i++)
 		el[i] = false;
 }
-void sudoku::walidador::add(char c)
+void sudoku::validator::add(const char c)
 {
 	if (c != '0')
 	{
 		el[c - '1'] = true;
-		liczba_elementow++;
+		number_of_items++;
 	}
 }
 
-bool sudoku::rozwiaz(int w, int k, tablica t)
+bool sudoku::solve(const int w, const int k, array t)
 {
-	// usiluje wstawic w miejsce [w][k] kolejne wartosci:
-
-	if (t.orig[w][k] == false) // nie ma danej oryginalnej
+	// [PL] usiluje wstawic w miejsce [w][k] kolejne wartosci:
+	// [EN] try to put a new value in [w][k]
+	if (t.orig[w][k] == false) // [PL] nie ma danej oryginalnej | [EN] empty cell
 	{
 		for (char c = '1'; c <= '9'; c++)
 		{
 			t.el[w][k] = c;
-			if (walidacja(t))
+			if (validation(t))
 			{
 				if (w == MAX - 1 && k == MAX - 1)
 				{
-					// cout << t << std::endl;
-					tab = t;
+					arr = t;
 					return true;
 				}
 
@@ -178,57 +176,55 @@ bool sudoku::rozwiaz(int w, int k, tablica t)
 				{
 					if (k < MAX - 1)
 					{
-						if (rozwiaz(w, k + 1, t))
+						if (solve(w, k + 1, t))
 							return true;
 					}
 					else
 					{
-						if (rozwiaz(w + 1, 0, t))
+						if (solve(w + 1, 0, t))
 							return true;
 					}
 				}
 			}
 		}
 	}
-	else // jest dana oryginalna, wiec przesuwam sie dalej
+	else // [PL] jest dana oryginalna, wiec przesuwam sie dalej | [EN] the cell is not empty, I move forwards
 	{
 		if (w == MAX - 1 && k == MAX - 1)
 		{
 			// cout << t << std::endl;
-			tab = t;
+			arr = t;
 			return true;
 		}
 		if (w <= MAX)
 		{
 			if (k < MAX - 1)
 			{
-				if (rozwiaz(w, k + 1, t))
+				if (solve(w, k + 1, t))
 					return true;
 
 			}
 			else
 			{
-				if (rozwiaz(w + 1, 0, t))
+				if (solve(w + 1, 0, t))
 					return true;
 
 			}
 		}
 	}
-
-
 	return false;
 }
 
-bool sudoku::rozwiaz()
+bool sudoku::solve()
 {
 
-	if (rozwiaz(0, 0, tab))
+	if (solve(0, 0, arr))
 		return true;
 	else
 		return false;
 }
 
-void sudoku::zapiszRozwiazanie(const std::string & s)
+void sudoku::save_solution(const std::string & s)
 {
 	std::ofstream plik(s.c_str());
 
@@ -239,7 +235,7 @@ void sudoku::zapiszRozwiazanie(const std::string & s)
 		{
 			for (j = 0; j < MAX; j++)
 			{
-				plik << tab.el[i][j];
+				plik << arr.el[i][j];
 			}
 			plik << std::endl;
 		}
@@ -248,34 +244,30 @@ void sudoku::zapiszRozwiazanie(const std::string & s)
 	}
 }
 
-void sudoku::wczytaj(const std::string & s)
+void sudoku::read_in(const std::string & s)
 {
-	std::ifstream plik (s.c_str());
+	std::ifstream file (s.c_str());
 
-	if (plik)
+	if (file)
 	{
 		int i, j;
 		for (i = 0; i < MAX; i++)
 		{
-			std::string linia;
-			getline(plik, linia);
+			std::string line;
+			getline(file, line);
 
-			if (linia.length() >= MAX)
+			if (line.length() >= MAX)
 			{
 				for (j = 0; j < MAX; j++)
 				{
-					tab.el[i][j] = linia[j];
-					if (tab.el[i][j] != '0')
-						tab.orig[i][j] = true;
+					arr.el[i][j] = line[j];
+					if (arr.el[i][j] != '0')
+						arr.orig[i][j] = true;
 					else
-						tab.orig[i][j] = false;
-
+						arr.orig[i][j] = false;
 				}
 			}
-
 		}
-		plik.close();
+		file.close();
 	}
-
-
 }

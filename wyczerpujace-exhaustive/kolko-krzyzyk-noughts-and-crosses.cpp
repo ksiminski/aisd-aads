@@ -7,56 +7,60 @@
 #include <memory>
 
 
-
-// Pozycja na planszy
-class pozycja
+ 
+class position
 {
-	static const int MAX = 3; // rozmiar tablicy
+	static const int SIZE = 3; 
 
-	char plansza [MAX][MAX];
+	char board [SIZE][SIZE];
 
-	std::vector<std::shared_ptr<pozycja>> potomki;
-	int ocenSytuacje(const char symbol);
-	std::shared_ptr<pozycja> kopiuj ();
-	int ocena;
+	std::vector<std::shared_ptr<position>> children;
+	int evaluate(const char symbol);
+	std::shared_ptr<position> copy ();
+	int evaluation;
 	
   public:
-	static int numer;
+	static int number;
 
-	static const char KRZYZYK = 'X';
-	static const char KOLKO = 'O';
-	static const char PUSTA = ' ';
-	void inicjalizujPlansze();
+	static const char CROSS = 'X';
+	static const char NOUGHT = 'O';
+	static const char EMPTY = ' ';
+	void initialise();
 
-	void wstawSymbol (const char symbol);
-	void wstawSymbol (const char symbol, int w, int k);
+	void insert (const char symbol);
+	void insert (const char symbol, int w, int k);
 	// ocenia sytuacje ze wzgledu na podany symbol, 
 	// gdy symbol wygrywa +1, gdy przegrywa -1, remis 0
-	int ocenSytuacjeDlaKrzyzyka();
+	int estimate_for_cross();
 
-	void wypisz();
-	void wypiszLiscie();
+	void print();
+	void print_leaves();
 
-	int ocenSytuacjeMax();
-	int ocenSytuacjeMin();
-	~pozycja ();
+	int estimate_max();
+	int estimate_min();
+	~position ();
 
 };
 
-int pozycja::numer;
+int position::number;
 
 int main(int argc, char * argv[])
 {
-	pozycja pierwszy;
-	pierwszy.inicjalizujPlansze();
-	pierwszy.numer = 0;
+	position first;
+	first.initialise();
+	first.number = 0;
 	// rozpoczynamy od wstawienia krzyzyka
-	pierwszy.wstawSymbol(pozycja::KRZYZYK);
+	first.insert(position::CROSS);
 
 	
 
-	pierwszy.wypiszLiscie();
-	auto ocena = pierwszy.ocenSytuacjeMax();
+	first.print_leaves();
+	
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
+	
+	auto ocena = first.estimate_max();
 	std::cout << "ocena dla gracza rozpoczynajacego: " << ocena << std::endl;
 	std::cout << "estimation for starting player:    " << ocena << std::endl;
 	
@@ -64,37 +68,37 @@ int main(int argc, char * argv[])
 	return 0;
 }
 
-void pozycja::wypiszLiscie()
+void position::print_leaves()
 {
-	if (potomki.size() == 0)
+	if (children.size() == 0)
 	{
 		std::cout << std::endl << std::endl;
-		std::cout << "===" << ++numer << "===" << std::endl << std::endl;
+		std::cout << "===" << ++number << "===" << std::endl << std::endl;
 
-		wypisz();
+		print();
 		return;
 	}
-	for (auto iter = potomki.begin(); iter != potomki.end(); ++iter)
-		(*iter)->wypiszLiscie();
+	for (auto iter = children.begin(); iter != children.end(); ++iter)
+		(*iter)->print_leaves();
 }
 
-void pozycja::wypisz()
+void position::print()
 {
 	int w, k;
 
 	std::cout << "+";
-	for (k = 0; k < MAX; k++)
+	for (k = 0; k < SIZE; k++)
 		std::cout << "-+";
 	std::cout << std::endl;
-	for (w = 0; w < MAX; w++)
+	for (w = 0; w < SIZE; w++)
 	{
 		std::cout << "|";
-		for (k = 0; k < MAX; k++)
-			std::cout << plansza[w][k] << "|";
+		for (k = 0; k < SIZE; k++)
+			std::cout << board[w][k] << "|";
 		std::cout << std::endl;
 
 		std::cout << "+";
-		for (k = 0; k < MAX; k++)
+		for (k = 0; k < SIZE; k++)
 			std::cout << "-+";
 		std::cout << std::endl;
 
@@ -102,157 +106,156 @@ void pozycja::wypisz()
 
 }
 
-void pozycja::wstawSymbol (const char symbol, int w, int k)
+void position::insert (const char symbol, int w, int k)
 {
-	plansza[w][k] = symbol;
+	board[w][k] = symbol;
 }
 
-void pozycja::wstawSymbol (const char symbol)
+void position::insert (const char symbol)
 {
-	// najpierw trzeba ocenic sytuacje na planszy,
-	// moze juz koniec rozgrywki
-	ocena = ocenSytuacjeDlaKrzyzyka();
-	if (ocena != 0)
-		return; // koniec rozgrywki
+	// [PL] Najpierw trzeba ocenic sytuacje na planszy, moze juz koniec rozgrywki.
+	// [EN] Estimate the board, maybe it's the end.
+	evaluation = estimate_for_cross();
+	if (evaluation != 0)
+		return; // koniec | game over
 
 	int w, k;
-	for (w = 0; w < MAX; w++)
-		for (k = 0; k < MAX; k++)
+	for (w = 0; w < SIZE; w++)
+		for (k = 0; k < SIZE; k++)
 		{
-			if (plansza[w][k] == PUSTA)
+			if (board[w][k] == EMPTY)
 			{
-				auto p = kopiuj();
-				p->wstawSymbol(symbol, w, k);
-				potomki.push_back(p);
+				auto p = copy();
+				p->insert(symbol, w, k);
+				children.push_back(p);
 			}
 		}
 
-	char symbol_przeciwny = symbol == KRZYZYK ? KOLKO : KRZYZYK;
+	char opposite_symbol = symbol == CROSS ? NOUGHT : CROSS;
 
-	for (auto iter = potomki.begin(); iter != potomki.end(); ++iter)
-		(*iter)->wstawSymbol(symbol_przeciwny);
+	for (auto iter = children.begin(); iter != children.end(); ++iter)
+		(*iter)->insert(opposite_symbol);
 }
 
-std::shared_ptr<pozycja> pozycja::kopiuj()
+std::shared_ptr<position> position::copy()
 {
-	auto temp = std::shared_ptr<pozycja> (new pozycja);
+	auto temp = std::shared_ptr<position> (new position);
 	int w, k;
-	for (w = 0; w < MAX; w++)
-		for (k = 0; k < MAX; k++)
-			temp->plansza[w][k] = plansza[w][k];
+	for (w = 0; w < SIZE; w++)
+		for (k = 0; k < SIZE; k++)
+			temp->board[w][k] = board[w][k];
 
 	return temp;
 }
 
-pozycja::~pozycja ()
+position::~position ()
 {
-	 
 }
 
-int pozycja::ocenSytuacjeMax()
+int position::estimate_max()
 {
-	if (potomki.size() == 0)
-		return ocenSytuacjeDlaKrzyzyka();
+	if (children.size() == 0)
+		return estimate_for_cross();
 	else
 	{
-		int ocena = -10;
-		for (auto iter = potomki.begin(); iter != potomki.end(); ++iter)
+		int estimation = -10;
+		for (auto iter = children.begin(); iter != children.end(); ++iter)
 		{
-			int ocena_potomka = (*iter)->ocenSytuacjeMin();
-			if (ocena < ocena_potomka)
-				ocena = ocena_potomka;
+			int child_estimation = (*iter)->estimate_min();
+			if (estimation < child_estimation)
+				estimation = child_estimation;
 
 		}
-		return ocena;
+		return estimation;
 	}
 }
 
-int pozycja::ocenSytuacjeMin()
+int position::estimate_min()
 {
-	if (potomki.size() == 0)
-		return ocenSytuacjeDlaKrzyzyka();
+	if (children.size() == 0)
+		return estimate_for_cross();
 	else
 	{
-		int ocena = +10;
-		for (auto iter = potomki.begin(); iter != potomki.end(); ++iter)
+		int estimation = +10;
+		for (auto iter = children.begin(); iter != children.end(); ++iter)
 		{
-			int ocena_potomka = (*iter)->ocenSytuacjeMax();
-			if (ocena > ocena_potomka)
-				ocena = ocena_potomka;
+			int child_estimation = (*iter)->estimate_max();
+			if (estimation > child_estimation)
+				estimation = child_estimation;
 
 		}
-		return ocena;
+		return estimation;
 	}
 }
 
 
-int pozycja::ocenSytuacjeDlaKrzyzyka()
+int position::estimate_for_cross()
 {
-	if (ocenSytuacje(KRZYZYK) == 1)
+	if (evaluate(CROSS) == 1)
 		return 1;
-	if (ocenSytuacje(KOLKO) == 1)
+	if (evaluate(NOUGHT) == 1)
 		return -1;
 	return 0;
 }
 
-int pozycja::ocenSytuacje(const char symbol)
+int position::evaluate(const char symbol)
 {
 	int w, k;
 
-	// sprawdzenie dla symbolu podanego
-	for (w = 0; w < MAX; w++)
+	 
+	for (w = 0; w < SIZE; w++)
 	{
-		bool jest_wiersz = true;
-		for (k = 0; k < MAX; k++)
+		bool row_present = true;
+		for (k = 0; k < SIZE; k++)
 		{
-			if (plansza[w][k] != symbol)
-				jest_wiersz = false;
+			if (board[w][k] != symbol)
+				row_present = false;
 		}
 
-		if (jest_wiersz)
+		if (row_present)
 			return 1; 
 	}
 
-	for (k = 0; k < MAX; k++)
+	for (k = 0; k < SIZE; k++)
 	{
-		bool jest_kolumna = true;
-		for (w = 0; w < MAX; w++)
+		bool column_present = true;
+		for (w = 0; w < SIZE; w++)
 		{
-			if (plansza[w][k] != symbol)
-				jest_kolumna = false;
+			if (board[w][k] != symbol)
+				column_present = false;
 		}
 
-		if (jest_kolumna)
+		if (column_present)
 			return 1; 
 	}
 
-	// przekatne
-	bool jest_przekatna = true;
-	for (w = 0; w < MAX; w++)
+	// przekatne | diagonal
+	bool diagonal_present = true;
+	for (w = 0; w < SIZE; w++)
 	{
-		if (plansza[w][w] != symbol)
-			jest_przekatna = false;
+		if (board[w][w] != symbol)
+			diagonal_present = false;
 	}
-	if (jest_przekatna)
+	if (diagonal_present)
 		return 1;
 
-	jest_przekatna = true;
-	for (w = 0; w < MAX; w++)
+	diagonal_present = true;
+	for (w = 0; w < SIZE; w++)
 	{
-		if (plansza[w][MAX - 1 - w] != symbol)
-			jest_przekatna = false;
+		if (board[w][SIZE - 1 - w] != symbol)
+			diagonal_present = false;
 	}
-	if (jest_przekatna)
+	if (diagonal_present)
 		return 1;
 
 	return 0;
 }
-void pozycja::inicjalizujPlansze()
+void position::initialise()
 {
 	int w, k;
-	for (w = 0; w < MAX; w++)
-		for (k = 0; k < MAX; k++)
-			plansza[w][k] = PUSTA;
+	for (w = 0; w < SIZE; w++)
+		for (k = 0; k < SIZE; k++)
+			board[w][k] = EMPTY;
 }
 
 

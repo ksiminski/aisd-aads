@@ -19,14 +19,20 @@ hetman-queens : hetman-queens.exe
 kolko-krzyzyk-noughts-and-crosses : kolko-krzyzyk-noughts-and-crosses.exe
 	./$^
 sudoku : sudoku.exe
+	./$^ sudoku-530.in sudoku-530.out
 	./$^ sudoku-1.in sudoku-1.out
 	./$^ sudoku-2.in sudoku-2.out
+	./$^ sudoku-hard.in sudoku-hard.out
+
 
 talia : talia.exe
 	./$^
 zalka : zalka.exe
 	./$^
-
+forty : forty.exe
+	./$^
+send : send.exe
+	./$^
 
 
 auto.exe : auto.cpp
@@ -41,8 +47,11 @@ talia.exe : talia.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(errors)  -o $@ $^
 zalka.exe : zalka.cpp
 	$(kompilator) $(standard) $(debug) $(optymalizacja) $(errors)  -o $@ $^
-
+forty.exe : forty.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(errors)  -o $@ $^
+send.exe : send.cpp
+	$(kompilator) $(standard) $(debug) $(optymalizacja) $(errors)  -o $@ $^
 
 clean : 
-	rm *.exe *.out
+	rm *.exe  
 
