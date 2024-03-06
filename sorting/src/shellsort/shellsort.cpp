@@ -1,8 +1,8 @@
 
 
 #include <array>
-#include "sorter.h"
-#include "shellsort.h"
+#include "../sorter.h"
+#include "./shellsort.h"
 
  
 

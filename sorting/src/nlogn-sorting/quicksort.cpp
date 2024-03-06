@@ -1,9 +1,9 @@
 
 #include <iostream>
 
-#include "sorter.h"
-#include "quicksort.h"
-#include "pivot_selector.h"
+#include "../sorter.h"
+#include "./quicksort.h"
+#include "./pivots/pivot_selector.h"
  
  
 

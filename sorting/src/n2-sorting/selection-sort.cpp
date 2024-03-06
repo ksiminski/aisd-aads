@@ -1,8 +1,8 @@
 
 
 #include <array>
-#include "sorter.h"
-#include "selection-sort.h"
+#include "../sorter.h"
+#include "./selection-sort.h"
 
  
 selection_sort::~selection_sort()

@@ -3,8 +3,8 @@
 #include <cmath>
 #include <iostream>
 
-#include "sorter.h"
-#include "heapsort.h"
+#include "../sorter.h"
+#include "./heapsort.h"
 
 #define debug(x) std::cerr << __FILE__ << " [" << __FUNCTION__ << "] (" << __LINE__ << ") " << #x << " == " << (x) << std::endl
 

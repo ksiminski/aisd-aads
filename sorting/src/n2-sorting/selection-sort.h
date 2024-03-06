@@ -3,7 +3,7 @@
 #ifndef SELECTION_SORT_H
 #define SELECTION_SORT_H
 
-#include "sorter.h"
+#include "../sorter.h"
 
 class selection_sort : public sorter
 {

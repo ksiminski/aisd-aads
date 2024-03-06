@@ -1,8 +1,8 @@
 
 #include <iostream>
 
-#include "sorter.h"
-#include "mergesort.h"
+#include "../sorter.h"
+#include "./mergesort.h"
 
  
 

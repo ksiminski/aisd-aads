@@ -5,8 +5,8 @@
 
 #include <memory>
 
-#include "sorter.h"
-#include "pivot_selector.h"
+#include "../sorter.h"
+#include "./pivots/pivot_selector.h"
 
 class quicksort : public sorter
 {

@@ -6,8 +6,8 @@
 
 #include <memory>
 
-#include "sorter.h"
-#include "gap_generator.h"
+#include "../sorter.h"
+#include "./gaps/gap_generator.h"
 
 class shellsort : public sorter
 {

@@ -3,7 +3,7 @@
 #ifndef INSERTION_SORT_H
 #define INSERTION_SORT_H
 
-#include "sorter.h"
+#include "../sorter.h"
 
 class insertion_sort : public sorter
 {

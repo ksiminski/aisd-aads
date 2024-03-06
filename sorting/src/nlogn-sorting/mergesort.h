@@ -3,7 +3,7 @@
 #ifndef MERGESORT_H
 #define MERGESORT_H
 
-#include "sorter.h"
+#include "../sorter.h"
 
 class mergesort : public sorter
 {

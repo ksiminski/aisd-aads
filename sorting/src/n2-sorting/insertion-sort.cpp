@@ -1,8 +1,8 @@
 
 
 #include <array>
-#include "sorter.h"
-#include "insertion-sort.h"
+#include "../sorter.h"
+#include "./insertion-sort.h"
 
  
 

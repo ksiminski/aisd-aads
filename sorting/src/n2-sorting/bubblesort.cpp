@@ -1,8 +1,8 @@
 
 
 #include <array>
-#include "sorter.h"
-#include "bubblesort.h"
+#include "../sorter.h"
+#include "./bubblesort.h"
 
  
 bubblesort::~bubblesort()

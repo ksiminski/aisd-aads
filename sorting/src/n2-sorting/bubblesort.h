@@ -3,7 +3,7 @@
 #ifndef BUBBLESORT_H
 #define BUBBLESORT_H
 
-#include "sorter.h"
+#include "../sorter.h"
 
 class bubblesort : public sorter
 {

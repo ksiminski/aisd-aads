@@ -3,7 +3,7 @@
 #ifndef HEAPSORT_H
 #define HEAPSORT_H
 
-#include "sorter.h"
+#include "../sorter.h"
 
 class heapsort : public sorter
 {
