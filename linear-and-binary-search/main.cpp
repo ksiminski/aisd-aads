@@ -1,7 +1,13 @@
-
-
-/* [PL] Program porównuje czas wyszukania elementów w posortowanej tablicy z wykorzystaniem wyszukiwania liniowego i wyszukiwania połówkowego.
-   [EN] The program compares execution times of linear and binary search in a sorted array. */
+/* [PL] Porównanie czasów wyszukania wartości 
+ *      w posortowanej tablicy dwiema metodami:
+ *      -- wyszukiwaniem liniowym, O(n),
+ *      -- wyszukiwaniem połówkowym, O(log n).
+ *
+ * [EN] Comparision of the search time in 
+ *      a sorted array with 
+ *      -- linear search, O(n),
+ *      -- binary search, O(log n).
+ */ 
 
 #include <string>
 #include <vector>
@@ -13,12 +19,6 @@
 
 #include "clock.h"
 
-
-/** [PL] wyszukiwanie liniowe 
-	[EN] linear search 
-	@return true: znaleziona | found 
-			false: nieznaleziona | not found
-    */
 bool linear_search (const std::vector<int> & numbers, const int searched)
 {
 	std::size_t size = numbers.size();
@@ -31,12 +31,7 @@ bool linear_search (const std::vector<int> & numbers, const int searched)
 	return false;
 }
 
-/** [PL] wyszukiwanie połówkowe 
-	[EN] binary search 
-	@return true: znaleziona | found 
-			false: nieznaleziona | not found 
-	*/
-bool binary_search (const std::vector<int> & numbers, const int search)
+bool binary_search (const std::vector<int> & numbers, const int searched)
 {
 	std::size_t size = numbers.size();
 
@@ -46,10 +41,10 @@ bool binary_search (const std::vector<int> & numbers, const int search)
 	while (left <= right)
 	{
 		auto middle = (left + right) / 2;
-		if (numbers[middle] == search)
+		if (numbers[middle] == searched)
 			return true;
 
-		if (search > numbers[middle])
+		if (searched > numbers[middle])
 			left = middle + 1;
 		else 
 			right = middle - 1;
@@ -57,21 +52,19 @@ bool binary_search (const std::vector<int> & numbers, const int search)
 	return false;
 }
 
-/** @return [PL] Funkcja zwraca wartość losową z rozkładu normalnego. | [EN] The function returns a random uniform numbers. */
-int random_number ()
+int random_value ()
 {
 	static std::default_random_engine engine(std::chrono::system_clock::now().time_since_epoch().count());
-	static std::uniform_int_distribution<int> distribution (10000000, 99999999);
+	static std::uniform_int_distribution<int> distro (10'000'000, 99'999'999);
 
-	return distribution(engine);
+	return distro(engine);
 }
 
-
-std::vector<int> get_random_numbers(const int size)
+std::vector<int> generate_numbers(const int size)
 {
 	std::vector<int> numbers;
 	for (int i = 0; i < size; i++)
-		numbers.push_back(random_number());
+		numbers.push_back(random_value());
 
 	std::sort (numbers.begin(), numbers.end());
 
@@ -85,72 +78,70 @@ double average (const std::vector<std::size_t>& values)
 
 int main ()
 {
-	ksi::clock clock;
+	ksi::clock stopwatch;
 
-	/** [PL] rozmiary trzech tablic 
-        [EN] sizes of three arrays */
-	const std::size_t LOW      {  50'000'000 };
-	const std::size_t MODERATE { 100'000'000 };
-	const std::size_t HIGH     { 150'000'000 };
+	const std::size_t S  {  50'000'000 };
+	const std::size_t M  { 100'000'000 };
+	const std::size_t L  { 150'000'000 };
+	const std::size_t XL { 300'000'000 };
 
-	auto repetitions { 15 };
+	auto repetitions { 10 };
 
-	int number_found_linear, number_found_binary, m3;
+	int m1, m2, m3;
 
-	std::map<std::size_t, std::map<std::string, std::vector<std::size_t>>> execution_times;
+	std::map<std::size_t, std::map<std::string, std::vector<std::size_t>>> times;
 
-
-	for (const auto number_of_numbers : { LOW, MODERATE, HIGH })
+	for (const auto data_size : { S, M, L, XL })
 	{
-		std::cout << "n = " << number_of_numbers << std::endl;
+		std::cout << "data size: n = " << data_size << std::endl;
+      std::cout << "---------+----------+--------" << std::endl;
+      std::cout << "linear   | binary   |        " << std::endl;
+      std::cout << "search   | search   | correct" << std::endl;
+      std::cout << "O(n)     | O(log n) | result " << std::endl;
+      std::cout << "---------+----------+--------" << std::endl;
 
-		/** [PL] utworzenie tablicy
-			[EN] create an array */
-		auto numbers = get_random_numbers(number_of_numbers);
+		auto numbers = generate_numbers(data_size);
 		for (decltype(repetitions) i = 0; i < repetitions; i++)
 		{        
-			/** [PL] liczba do wyszukania w tablicy
-				[EN] a number to search in an array */
-			auto searched = random_number();
+			auto searched = random_value();
 
 			/////////////////////////
 			{
-				std::string method { "O(n)" };
-				std::cout << method << '\t';
+            std::string method {"linear"};
+				stopwatch.start();
+				m1 = linear_search(numbers, searched);
+				stopwatch.stop();
 
-				clock.start();
-				number_found_linear = linear_search(numbers, searched);
-				clock.stop();
-
-				auto elapsed_time = clock.elapsed_microseconds();
-				execution_times[number_of_numbers][method].push_back(elapsed_time);
+				auto time = stopwatch.elapsed_microseconds();
+				times[data_size][method].push_back(time);
 			}
 			/////////////////////////
 			{
-				std::string method { "O(log n)" };
-				std::cout << method << '\t';
+            std::string method {"binary"};
+				stopwatch.start();
+				m2 = binary_search(numbers, searched);
+				stopwatch.stop();
 
-				clock.start();
-				number_found_binary = binary_search(numbers, searched);
-				clock.stop();
-
-				auto elapsed_time = clock.elapsed_microseconds();
-				execution_times[number_of_numbers][method].push_back(elapsed_time);
+				auto time = stopwatch.elapsed_microseconds();
+				times[data_size][method].push_back(time);
 			}
-			std::cout << number_found_linear << '\t' << number_found_binary << '\t' << std::endl;
+			std::cout << m1 << "        | " << m2 << "        | ";
+         std::cout << (m1 == m2 ? "OK" : "fadata_sized") << std::endl;
 		}
+      std::cout << std::endl;
 	}
 
-	// final results:
+	// [PL] wypisujemy wyniki
+   // [EN] print results
 
-	for (const auto & number_of_numbers : execution_times)
+	for (const auto & data_size : times)
 	{
-		std::cout << "n = " << number_of_numbers.first  << '\t';
-		for (const auto & method : number_of_numbers.second)
+		std::cout << "n = " << data_size.first  << '\t';
+		for (const auto & method : data_size.second)
 		{
 			std::cout << method.first << ": ";
-			auto avg = average (method.second);
-			std::cout << avg  << " [ms]\t";
+			auto srednia = average (method.second);
+			std::cout << srednia  << " [ms]\t";
 		}
 		std::cout << std::endl;
 	}
