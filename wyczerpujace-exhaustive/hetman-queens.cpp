@@ -1,12 +1,12 @@
 
-// Program do rozwiazywania problemu n hetmanow
+// [PL] problem n hetmanow
+// [EN] n queens problem
 
 #include <climits>
 #include <stdlib.h>
 #include <iostream>
-#include <iomanip>      // std::setw
+#include <iomanip>      
 
- 
 
 
 #define DEBUG(x) { std::cout << #x << " = " << x << std::endl; }
@@ -44,9 +44,12 @@ int main (int ile, char ** argumenty)
 {
 	if (ile < 2) 
 	{
-		std::cout << "Program do rozwiazywania problemu n hetmanow" << std::endl << std::endl;
-		std::cout << "uruchomienie programu: " << std::endl << argumenty[0] << " n" << std::endl;
-		std::cout << "gdzie n to rozmiar szachownicy (liczba kolumn)" << std::endl;
+		std::cout << "[PL] Program do rozwiazywania problemu n hetmanow" << std::endl << std::endl;
+		std::cout << "     uruchomienie programu: " << std::endl << argumenty[0] << " n" << std::endl;
+		std::cout << "     gdzie n to rozmiar szachownicy (liczba kolumn)" << std::endl;
+		std::cout << "[EN] Program for n queens problem" << std::endl << std::endl;
+		std::cout << "     to run the program: " << std::endl << argumenty[0] << " n" << std::endl;
+		std::cout << "     where n is the number of files/columns or ranks/rows of the checkboard" << std::endl;
 
 		return 0;
 	} 
@@ -61,7 +64,8 @@ int main (int ile, char ** argumenty)
 
 	int indeks = 0;
 
-	// rozpoczynamy od zerowego wiersza
+	// [PL] rozpoczynamy od zerowego wiersza
+	// [EN] we start with the 0-th row (rank)
 	while (indeks >= 0)
 	{
 		wiersze[indeks]++;
@@ -73,7 +77,8 @@ int main (int ile, char ** argumenty)
 		}
 		else
 		{
-			// sprawdzenie, czy ten hetman moze tutaj stac
+			// [PL] sprawdzenie, czy ten hetman moze tutaj stac
+			// [EN] check if it is legal to locate a queen here
 			int poprzedni;
 			bool tutaj_moze = true;  
 
@@ -84,7 +89,8 @@ int main (int ile, char ** argumenty)
 					tutaj_moze = false;
 				else 
 				{
-					// sprawdzenie przekatnych
+					// [PL] sprawdzenie przekatnych
+					// [EN] diagonal check
 					int roznica = indeks - poprzedni;
 					if (wiersze[poprzedni] - roznica >= 0)
 					{
@@ -107,7 +113,7 @@ int main (int ile, char ** argumenty)
 
 			if (tutaj_moze)
 			{
-				if (indeks == N - 1)  // postawiony ostatni hetman
+				if (indeks == N - 1)  // [PL] postawiony ostatni hetman \ [EN] the last queen
 				{  
 					wypisz(wiersze, N, ++ustawienie);
 				}

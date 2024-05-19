@@ -1,7 +1,9 @@
 
-#include <string>
+#include <chrono>
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <string>
 
 const int MAX = 9;
 
@@ -29,24 +31,57 @@ std::ostream & operator<< (std::ostream & s, array & t)
 
 class sudoku
 {
-	class validator
-	{
-		bool el[MAX];
-		int number_of_items;
-		public:
-		validator();
-		void reset();
-		void add(char);
-		bool validate();
-	};
-	array arr;
-	bool solve(int w, int k, array tab);
-	bool validation (array & t);
-	public:
-	std::string outputFile;
-	void read_in(const std::string & plik);
-	void save_solution (const std::string & plik);
-	bool solve();
+   public:
+   class clock 
+   {
+      std::chrono::high_resolution_clock _zegar;
+      std::chrono::high_resolution_clock::time_point _start {};
+      std::chrono::high_resolution_clock::time_point _stop  {};
+
+      public:
+      std::chrono::high_resolution_clock::time_point start()
+      {
+         return _start = _zegar.now();
+      }
+
+      std::chrono::high_resolution_clock::time_point stop()
+      {
+         return _stop = _zegar.now();
+      }
+
+      std::size_t elapsed_seconds()
+      {
+         return (std::chrono::duration_cast<std::chrono::seconds>(_stop - _start)).count();
+      }
+
+      std::size_t elapsed_milliseconds()
+      {
+         return (std::chrono::duration_cast<std::chrono::milliseconds>(_stop - _start)).count();
+      }  
+
+   };
+
+   private:
+   class validator
+   {
+      bool el[MAX];
+      int number_of_items;
+      public:
+      validator();
+      void reset();
+      void add(char);
+      bool validate();
+   };
+
+   array arr;
+   bool solve(int w, int k, array tab);
+   bool validation (array & t);
+   public:
+   std::string outputFile;
+   void read_in(const std::string & plik);
+   void save_solution (const std::string & plik);
+   void print(std::ostream & s);
+   bool solve();
 
 };
 
@@ -70,10 +105,18 @@ int main(int argc, char * argv[])
 	std::string input (argv[1]);
 	std::string output (argv[2]);
 	sudoku s;
+   sudoku::clock k;
 	s.read_in(input);
+   std::cout << "---------" << std::endl;
+   s.print(std::cout);
+   k.start();
 	s.solve();
+   k.stop();
 	s.save_solution(output);
-
+   std::cout << "---------" << std::endl;
+   s.print(std::cout);
+   std::cout << "---------" << std::endl;
+   std::cout << "t = " << k.elapsed_milliseconds() << " ms" << std::endl;
 	return 0;
 }
 
@@ -230,18 +273,40 @@ void sudoku::save_solution(const std::string & s)
 
 	if (plik)
 	{
-		int i, j;
-		for (i = 0; i < MAX; i++)
-		{
-			for (j = 0; j < MAX; j++)
-			{
-				plik << arr.el[i][j];
-			}
-			plik << std::endl;
-		}
-
+      print(plik);
 		plik.close();
 	}
+}
+
+void sudoku::print(std::ostream & s)
+{
+   std::stringstream sos; 
+   sos << '+';
+   for (int i = 0; i < MAX; i++)
+   {
+      sos << "-+";
+   }
+   std::string line = sos.str();
+
+   if (s)
+   {
+      s << line << std::endl;
+      for (int i = 0; i < MAX; i++)
+      {
+         s << '|';
+         for (int j = 0; j < MAX; j++)
+         {
+            if (arr.el[i][j] != '0')
+               s << arr.el[i][j];
+            else 
+               s << ' ';
+            s << '|';
+         }
+         s << std::endl;
+         s << line << std::endl;
+
+      }
+   }
 }
 
 void sudoku::read_in(const std::string & s)
