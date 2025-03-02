@@ -153,7 +153,8 @@ int main ()
 	
 	// [PL] Wierzchołki są numerowane zawsze od zera.
 	// [EN] The vertices are always indexed from zero.
-	g.add_edges(
+/*
+   g.add_edges(
 		{
 			{0, 1, 2},
 			{0, 3, 8},
@@ -170,7 +171,26 @@ int main ()
 			{3, 2, 2},
 		}
 	);
-	
+*/	
+   g.add_edges(
+		{
+			{0, 1, 2},
+			{0, 4, 2},
+
+			{1, 0, 2},
+			{1, 2, 3},
+			{1, 3, 4},
+
+			{2, 3, -1},
+
+			{3, 0, 7},
+			{3, 4, 2},
+
+			{4, 0, 5},
+			{4, 1, 1},
+			{4, 2, 1},
+		}
+	);
 	std::cout << "GRAPH" << std::endl;
 	std::cout << "adjacency matrix" << std::endl;
 	std::cout << g.to_string_adjacency_matrix() << std::endl;
