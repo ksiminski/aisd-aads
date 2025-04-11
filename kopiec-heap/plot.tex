@@ -2,12 +2,10 @@
  
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.14}
-\usepackage{upgreek}
 
 \begin{document}
 \begin{tikzpicture}
 \begin{axis}[
-%width=10cm,height=8cm,
 width=15cm,height=15cm,
 ymin =0,
 scale only axis,
@@ -15,11 +13,10 @@ axis y line*=left,
 xlabel={$n$},
 ylabel style = {align=center},
 tick label style={/pgf/number format/fixed},
-ylabel={$t$ [$\upmu$s]},
+ylabel={$t$ [ms]},
 legend style={at={(0.45,1)}}
 ]
-%\addplot [mark=none,red] table [x=n, y=h, column sep=tab] {output.dat};\addlegendentry{HashTable}; 
-\addplot [mark=none,green] table [x=n, y=b, column sep=tab] {output.dat};\addlegendentry{BalTree} 
+\addplot table [x=n, y=t, column sep=tab] {_release/output.dat};\addlegendentry{make heap} 
 \label{pgfplots:plot1}
 \end{axis}
 %
